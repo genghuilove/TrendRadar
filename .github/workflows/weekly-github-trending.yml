@@ -1,0 +1,30 @@
+name: Weekly GitHub Trending Email
+
+on:
+  schedule:
+    # 09:00 every Monday in Asia/Shanghai is 01:00 UTC.
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Send weekly email
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GMAIL_USER: xinhongyuan2023@gmail.com
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          MAIL_TO: xinhongyuan2023@gmail.com
+        run: python scripts/send_github_trending.py
